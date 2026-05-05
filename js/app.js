@@ -37,9 +37,9 @@ const PulseApp = (() => {
     }
 
     // ---- Initialize ----
-    function init() {
+    async function init() {
         cacheDOMElements();
-        initSupabase();
+        await initSupabase();
         bindEvents();
         checkExistingSession();
     }

@@ -1,6 +1,7 @@
 {
   "name": "pulse-chat",
   "version": "1.0.0",
+  "type": "module",
   "private": true,
   "description": "Pulse — Chat em tempo real",
   "scripts": {

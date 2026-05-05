@@ -287,8 +287,8 @@ const PulseApp = (() => {
             if (error) throw error;
         } catch (err) {
             console.error('Erro ao enviar mensagem:', err);
-            showToast('Erro ao enviar mensagem');
-            setTimeout(hideToast, 3000);
+            showToast(`Erro: ${err.message || 'Falha ao enviar'}`);
+            setTimeout(hideToast, 5000);
             // Restore the message so user can retry
             DOM.messageInput.value = content;
             DOM.sendBtn.disabled = false;

@@ -44,12 +44,34 @@ const PulseApp = (() => {
         checkExistingSession();
     }
 
-    function initSupabase() {
+    async function initSupabase() {
         const { createClient } = window.supabase;
-        supabaseClient = createClient(
-            PULSE_CONFIG.SUPABASE_URL,
-            PULSE_CONFIG.SUPABASE_ANON_KEY
-        );
+        
+        // Tenta pegar da config local primeiro (fallback)
+        let url = PULSE_CONFIG.SUPABASE_URL;
+        let anonKey = PULSE_CONFIG.SUPABASE_ANON_KEY;
+
+        // Tenta buscar da API da Vercel (Production)
+        try {
+            const response = await fetch('/api/config');
+            if (response.ok) {
+                const remoteConfig = await response.json();
+                if (remoteConfig.SUPABASE_URL && remoteConfig.SUPABASE_ANON_KEY) {
+                    url = remoteConfig.SUPABASE_URL;
+                    anonKey = remoteConfig.SUPABASE_ANON_KEY;
+                    console.log('📡 Configurações carregadas via Vercel API');
+                }
+            }
+        } catch (err) {
+            console.warn('⚠️ Falha ao buscar config via API, usando fallback local.');
+        }
+
+        if (!url || !anonKey || anonKey.includes('YOUR_ANON_KEY')) {
+            showToast('Erro: Configurações do Supabase não encontradas.');
+            return;
+        }
+
+        supabaseClient = createClient(url, anonKey);
     }
 
     function bindEvents() {
